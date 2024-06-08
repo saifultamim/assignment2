@@ -3,6 +3,6 @@ import { orderController } from './order.controll'
 
 const orderrouter = express.Router()
 
-orderrouter.post('/api/orders',orderController.orderCreate)   
-orderrouter.get('/api/orders',orderController.orderFind)
+orderrouter.post('/',orderController.orderCreate)   
+orderrouter.get('/',orderController.orderFind)
 export default orderrouter

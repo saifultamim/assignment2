@@ -1,11 +1,11 @@
 import Joi from 'joi'
-
-const joiOrderSchema = Joi.object({
-    email: Joi.string().required(),
-    productId: Joi.string().required(),
-    price: Joi.number().required(),
-    quantity: Joi.number().required(),
+import { z } from 'zod';
+const zodOrderSchema = z.object({
+    email: z.string().email({ message: 'Invalid Email' }),
+    productId: z.string(),
+    price: z.number().int().positive({ message: 'Price must be  positive integer' }),
+    quantity: z.number().int().nonnegative({ message: 'Quantity must be  non-negative integer' }),
 
 })
 
-export default  joiOrderSchema
+export default  zodOrderSchema

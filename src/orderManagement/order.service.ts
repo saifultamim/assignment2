@@ -6,10 +6,12 @@ import { OrderModel } from "./order.model"
 
 
 const orderCreate = async(payLoad : TOrder) => {
-  const result = await OrderModel.create(payLoad)
+  const productQuantity = await productModel.find({},{'inventory.quantity':1})
+  if(productQuantity[0].inventory.quantity>0){
+    const result = await OrderModel.create(payLoad)
   if(result){
     const quantityFinds = await productModel.find({},{'inventory.quantity':1})
-    const updateQuantity = quantityFinds[0].inventory.quantity -1
+    const updateQuantity = quantityFinds[0].inventory.quantity - payLoad.quantity
     if(updateQuantity>=0){
       await productModel.updateMany({},{ $set: { 'inventory.quantity': updateQuantity } })
       if(updateQuantity<=0){
@@ -18,6 +20,10 @@ const orderCreate = async(payLoad : TOrder) => {
     }
   }
     return result
+  }
+  else{
+    throw new Error('Insufficient quantity available in inventory')
+  }
 }
 
 const orderFind = async() => {

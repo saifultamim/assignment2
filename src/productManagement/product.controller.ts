@@ -1,21 +1,14 @@
 import { Request, Response } from "express"
 import { productService } from "./product.service"
-import joiProductSchema from "./product.validation"
+import productValidation from "./product.validation"
 
 //======================newProductCreate===========================
 const newProductCreate = async(req:Request,res:Response)=>{
    
       try{
     const productData = req.body
-    const {error}=joiProductSchema.validate(productData)
-    if(error){
-        res.json({
-            success:false,
-            message:'Product Data in not correct validation',
-            data:error.details
-        })
-    }
-       const result = await productService.newProductCreate(productData)
+    const zodValidateData=productValidation.parse(productData)
+       const result = await productService.newProductCreate(zodValidateData)
    res.json({
     success:true,
     message: "Product created successfully!",

@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { orderService } from "./order.service"
-import joiOrderSchema from "./order.validation"
+import zodOrderSchema from "./order.validation"
 
 
 //===============orderCreate===============================
@@ -8,22 +8,18 @@ const orderCreate = async(req:Request,res:Response)=>{
    
     try{
   const orderData = req.body
-  const {error}=joiOrderSchema.validate(orderData)
-  if(error){
-      return res.json({
-          success:false,
-          message:'order  is not correct validation',
-          data:error.details
-      })
-  }
-     const result = await orderService.orderCreate(orderData)
+  const validateData=zodOrderSchema.parse(orderData)
+     const result = await orderService.orderCreate(validateData)
  res.json({
   success:true,
   message: "Order created successfully!",
   data:result
  })
-    }catch(error){
-      console.log(error)
+    }catch(error : any){
+      res.json({
+        "success": false,
+        "message": error.message
+    })
     }
 }
 
